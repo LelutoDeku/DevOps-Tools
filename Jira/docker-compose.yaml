@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  jira:
+    image: atlassian/jira-software
+    ports:
+      - "8083:8080"
+    environment:
+      - JIRA_DATABASE_URL=jdbc:postgresql://postgres:5432/jira
+      - JIRA_DATABASE_USERNAME=jira
+      - JIRA_DATABASE_PASSWORD=jira
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=jira
+      - POSTGRES_PASSWORD=jira
+      - POSTGRES_DB=jira
