@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.36.2
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    ports:
+      - 9100:9100
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
