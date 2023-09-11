@@ -1,0 +1,54 @@
+version: '3.9'
+
+networks:
+ app_network:
+   name: fastnetwork
+   driver: bridge
+   
+services:
+ api:
+   image: api
+   build:
+     context: ./FastRest.Api
+     dockerfile: Dockerfile
+   environment:
+     DB_CONN_STR: "host=db;port=5432;database=fsr-db;userid=postgres;password=postgr@12"
+   ports:
+     - "5001:8087"
+   networks:
+     - app_network
+   depends_on:
+     - "db"
+
+ ui:
+   image: ui
+   build:
+     context: ./FastRest.Ui
+     dockerfile: Dockerfile
+   environment:
+     DB_CONN_STR: "host=db;port=5432;database=fsr-db;userid=postgres;password=postgr@12"
+   ports:
+     - "5002:8088"
+   networks:
+     - app_network
+   depends_on:
+     - "db"
+
+ db:
+   image: postgres
+   environment:
+     POSTGRES_DB: 'fsr-db'
+     POSTGRES_HOST_AUTH_METHOD: 'trust'
+   volumes:
+     - fast_db_volume:/var/lib/postgresql/fastdb
+     - ./FastRest.Db:/docker-entrypoint-initdb.d/
+   ports:
+     - 5432:5432
+   networks:
+     - app_network
+     
+     
+volumes:
+       local_admindb_volume:
+       local_coredb_volume :
+       fast_db_volume:
